@@ -24,6 +24,7 @@ function init() {
 
         drawBarGraph(selectedIndex);
         drawBubbleGraph(selectedIndex);
+        demographicInfo(selectedIndex);
     });
 };
 
@@ -54,7 +55,7 @@ function drawBarGraph(index) {
         };
 
         let layout = {
-            title: 'Bacteria Cultures Found',
+            title: 'Bacteria Cultures Found (Top 10)',
             margin: {t: 50, l: 150}
         };
 
@@ -93,6 +94,28 @@ function drawBubbleGraph(index) {
     });
 };
 
+function demographicInfo(index) {
+    dataPromise.then(data => {
+        console.log(data);
+        
+        // Find metadata for selection
+        let metaData = data.metadata[index];
+        console.log(metaData);
+
+        // Select metadata section in HTML
+        let demographicInfo = d3.select('#sample-metadata');
+
+        // Clear metadata section
+        demographicInfo.html('');
+
+        // Add new metadata to section
+        Object.entries(metaData).forEach(([key, value]) => {
+            demographicInfo.append('h4').html(`<b>${key}:</b> ${value}`);
+        });
+
+    });
+};
+
 // Function called by DOM changes
 function optionChanged() {
     let dropdownMenu = d3.select('#selDataset');
@@ -103,6 +126,7 @@ function optionChanged() {
     // Call function to update the chart
     drawBarGraph(selectedIndex);
     drawBubbleGraph(selectedIndex);
+    demographicInfo(selectedIndex);
 };
   
 init();
